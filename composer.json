@@ -1,0 +1,29 @@
+{
+    "name": "imdhemy/berrylastic",
+    "description": "Laravel High level Elasticsearch client for Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohamad Eldhemy",
+            "email": "imdhemy@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.1.3",
+        "elasticsearch/elasticsearch": "~6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Imdhemy\\Berrylastic\\" : "src/"
+        }
+    },
+    "extra": {
+        "laravel" : {
+            "providers": [
+                "Imdhemy\\Berrylastic\\Providers\\BerrylasticServiceProvider"
+            ]
+        }
+    }
+}
