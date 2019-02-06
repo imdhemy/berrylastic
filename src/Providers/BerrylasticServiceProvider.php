@@ -2,6 +2,7 @@
 
 namespace Imdhemy\Berrylastic\Providers;
 
+use Elasticsearch\Client;
 use Illuminate\Support\ServiceProvider;
 
 class BerrylasticServiceProvider extends ServiceProvider
@@ -23,6 +24,10 @@ class BerrylasticServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('imdhemy.berrylastic', function () {
+            return new Client;
+        });
+
+        $this->app->alias('imdhemy.berrylastic', Client::class);
     }
 }
