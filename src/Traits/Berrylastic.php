@@ -46,7 +46,7 @@ trait Berrylastic
      */
     protected function savedHandler()
     {
-        $this->client()->index($this->getParams());
+        $this->client()->indexOrUpdate($this->getParams());
     }
 
     /**
