@@ -97,4 +97,15 @@ class Client
     {
         return (bool) $this->get($params);
     }
+
+    /**
+     * Search against indexd docuemnts
+     *
+     * @param  array  $params
+     * @return array
+     */
+    public function search(array $params = []) : array
+    {
+        return $this->elasticsearch()->search($params);
+    }
 }
