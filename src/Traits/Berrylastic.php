@@ -2,9 +2,14 @@
 namespace Imdhemy\Berrylastic\Traits;
 
 use Imdhemy\Berrylastic\Client;
+use Imdhemy\Berrylastic\Factories\SearchFactory;
+use Imdhemy\Berrylastic\Traits\DocumentTrait;
+use Imdhemy\Berrylastic\Traits\SearchTrait;
 
 trait Berrylastic
 {
+    use DocumentTrait, SearchTrait;
+
     /**
      * Hold instance of Berrylastic Client
      *
@@ -46,7 +51,9 @@ trait Berrylastic
      */
     protected function savedHandler()
     {
-        $this->client()->indexOrUpdate($this->getParams());
+        if ($this->shouldSyncDocument()) {
+            $this->client()->indexOrUpdate($this->getDocumentParams());
+        }
     }
 
     /**
@@ -57,63 +64,5 @@ trait Berrylastic
     protected function deletedHandler()
     {
         //
-    }
-
-    /**
-     * Get document params
-     *
-     * @return array
-     */
-    protected function getParams() : array
-    {
-        $params =  [
-            'id'    => $this->getDocumentID(),
-            'index' => $this->getDocumentIndex(),
-            'type'  => $this->getDocumentType(),
-            'body'  => $this->getDocumentBody()
-        ];
-        return array_filter($params);
-    }
-
-    /**
-     * Get document id
-     *
-     * @return string
-     */
-    protected function getDocumentID() : string
-    {
-        $primary_key = $this->getKeyName();
-        return $this->$primary_key;
-    }
-
-    /**
-     * Get document index from config or from the model if provided
-     *
-     * @return string
-     */
-    protected function getDocumentIndex() : string
-    {
-        return $this->document_index ?: env('SEARCH_INDEX', 'berrylastic');
-    }
-
-    /**
-     * Get document type. By default Berrylastic will use the table name as the document type.
-     * You can use a custom name by adding the $document_type string property
-     *
-     * @return string
-     */
-    protected function getDocumentType() : string
-    {
-        return $this->document_type ?: $this->getTable();
-    }
-
-    /**
-     * Get document body
-     *
-     * @return array
-     */
-    protected function getDocumentBody() : array
-    {
-        return $this->only($this->searchable);
     }
 }
