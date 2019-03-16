@@ -42,7 +42,7 @@ trait DocumentTrait
     }
 
     /**
-     * Detmermine whether to auto sync documents or not
+     * Determine whether to auto sync documents or not
      *
      * @return bool
      */
@@ -50,6 +50,19 @@ trait DocumentTrait
     {
         if (property_exists($this, 'sync_document')) {
             return $this->sync_document;
+        }
+        return true;
+    }
+
+    /**
+     * Determine whether to auto delete a document or not
+     *
+     * @return bool
+     */
+    protected function shouldDeleteDocument() : bool
+    {
+        if (property_exists($this, 'delete_document')) {
+            return $this->delete_document;
         }
         return true;
     }

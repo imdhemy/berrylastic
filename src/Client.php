@@ -6,16 +6,16 @@ use Elasticsearch\ClientBuilder;
 class Client
 {
     /**
-     * Hold instance of Elasticsearch client
+     * Hold instance of Elastic search client
      *
-     * @var Elasticsearch\Client
+     * @var Elastic search\Client
      */
     private $elasticsearch;
 
     /**
-     * Get instance of Elasticsearch client
+     * Get instance of Elastic search client
      *
-     * @return Elasticsearch\Client
+     * @return Elastic search\Client
      */
     private function elasticsearch()
     {
@@ -99,7 +99,7 @@ class Client
     }
 
     /**
-     * Search against indexd docuemnts
+     * Search against indexed documents
      *
      * @param  array  $params
      * @return array
@@ -107,5 +107,17 @@ class Client
     public function search(array $params = []) : array
     {
         return $this->elasticsearch()->search($params);
+    }
+
+    /**
+     * Deletes a document using its (index/type/id)
+     *
+     * @param  array  $params
+     * @return array
+     */
+    public function delete(array $params = []) : array
+    {
+        unset($params['body']);
+        return $this->elasticsearch()->delete($params);
     }
 }

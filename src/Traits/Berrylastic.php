@@ -18,7 +18,7 @@ trait Berrylastic
     protected $client;
 
     /**
-     * Boot berrlastic on model
+     * Boot Berrylastic on model
      */
     public static function bootBerrylastic()
     {
@@ -63,6 +63,8 @@ trait Berrylastic
      */
     protected function deletedHandler()
     {
-        //
+        if ($this->shouldDeleteDocument()) {
+            $this->client()->delete($this->getDocumentParams());
+        }
     }
 }
