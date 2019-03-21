@@ -32,14 +32,21 @@ trait SearchTrait
      *
      * @var array
      */
-    protected $raw_search_results;
+    public $raw_search_results;
 
     /**
      * Hold elastic search hits
      *
      * @var Illuminate\Support\Collection
      */
-    protected $hits;
+    public $hits;
+
+    /**
+     * Total hits count
+     *
+     * @var int
+     */
+    public $total_hits;
 
     /**
      * Restrict query to search results
@@ -47,12 +54,13 @@ trait SearchTrait
      * @param  Builder $builder
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSearch(Builder $builder, ?string $primary_key = null)
+    public function scopeSearch(Builder $builder, int $skip = 0, int $take = 15)
     {
-        $params = $this->getSearchParams();
+        $take = $take + 1;
+        $params = $this->getSearchParams($skip, $take);
         $results = $this->client()->search($params);
         $this->setSearchResults($results);
-        return $this->scopedSearchQuery($builder, $primary_key);
+        return $this->scopedSearchQuery($builder);
     }
 
     /**
@@ -84,7 +92,7 @@ trait SearchTrait
     }
 
     /**
-     * Get instance of ElasricsearchDSL Fulltext Query
+     * Get instance of ElasricsearchDSL Full-text Query
      *
      * @param  string $method
      * @param  array $parameters
@@ -129,13 +137,15 @@ trait SearchTrait
      *
      * @return array
      */
-    protected function getSearchParams() : array
+    protected function getSearchParams(int $from = 0, int $size = 15) : array
     {
         $search = new Search();
         foreach ($this->searchQueries() as $query) {
             $search->addQuery($query);
         }
         return [
+            'from'  => $from,
+            'size'  => $size,
             'index' => $this->getDocumentIndex(),
             'type'  => $this->getDocumentType(),
             'body' => $search->toArray()
@@ -151,6 +161,7 @@ trait SearchTrait
     {
         $this->raw_search_results = $results;
         $this->hits = new Collection($results['hits']['hits']);
+        $this->total_hits = $results['hits']['total'];
     }
 
     /**
@@ -159,15 +170,16 @@ trait SearchTrait
      * @param  Builder $builder
      * @return Illuminate\Database\Eloquent\Builder
      */
-    protected function scopedSearchQuery(Builder $builder, ?string $primary_key = null) : Builder
+    protected function scopedSearchQuery(Builder $builder) : Builder
     {
         $identifiers = $this->hits()->pluck('_id');
-        $primary_key = $primary_key ?: $this->getKeyName();
+        $primary_key = $this->getTable() . "." .$this->getKeyName();
         $builder = $builder->whereIn($primary_key, $identifiers);
         if ($identifiers->count()) {
             $ordered_identifiers = $identifiers->implode(',');
             $builder = $builder->orderByRaw(\DB::raw("FIELD($primary_key, $ordered_identifiers)"));
         }
+        $builder->total_hits = $this->total_hits;
         return $builder;
     }
 }
