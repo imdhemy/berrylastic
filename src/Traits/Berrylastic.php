@@ -1,10 +1,8 @@
 <?php
+
 namespace Imdhemy\Berrylastic\Traits;
 
 use Imdhemy\Berrylastic\Client;
-use Imdhemy\Berrylastic\Factories\SearchFactory;
-use Imdhemy\Berrylastic\Traits\DocumentTrait;
-use Imdhemy\Berrylastic\Traits\SearchTrait;
 
 trait Berrylastic
 {
