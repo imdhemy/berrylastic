@@ -17,7 +17,7 @@ class Search
     private $client;
 
     /**
-     * Hold instance of the Eloqunet model
+     * Hold instance of the Eloquent model
      *
      * @var Illuminate\Database\Eloquent\Model
      */

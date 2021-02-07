@@ -1,10 +1,8 @@
 <?php
+
 namespace Imdhemy\Berrylastic\Traits;
 
 use Imdhemy\Berrylastic\Client;
-use Imdhemy\Berrylastic\Factories\SearchFactory;
-use Imdhemy\Berrylastic\Traits\DocumentTrait;
-use Imdhemy\Berrylastic\Traits\SearchTrait;
 
 trait Berrylastic
 {
@@ -18,7 +16,7 @@ trait Berrylastic
     protected $client;
 
     /**
-     * Boot berrlastic on model
+     * Boot Berrylastic on model
      */
     public static function bootBerrylastic()
     {
@@ -63,6 +61,8 @@ trait Berrylastic
      */
     protected function deletedHandler()
     {
-        //
+        if ($this->shouldDeleteDocument()) {
+            $this->client()->delete($this->getDocumentParams());
+        }
     }
 }
